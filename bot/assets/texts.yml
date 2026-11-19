@@ -1,5 +1,15 @@
-RU:
-  START: Привет!
-
-EN:
-  START: Hello!
+en:
+  texts:
+    start: Hello!
+  keyboard:
+    start: 
+      btn1: Button 1 text
+      btn2: Button 2 text
+      
+ru:
+  texts:
+    start: Привет!
+  keyboard:
+    start:
+      btn1: Текст кнопки 1
+      btn2: Текст кнопки 2

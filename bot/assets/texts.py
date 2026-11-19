@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 from pathlib import Path
+from pydantic import BaseModel, ConfigDict
 import yaml
 
 
@@ -10,15 +10,37 @@ with open(yaml_path, "r", encoding="utf-8") as file:
     data = yaml.safe_load(file)
 
 
-@dataclass(frozen=True)
-class LanguageTexts:
-    START: str
+class FrozenModel(BaseModel):
+    model_config = ConfigDict(frozen=True)
 
 
-class Texts:
-    RU = LanguageTexts(**data["RU"])
-    EN = LanguageTexts(**data["EN"])
+# Message texts
+class Texts(FrozenModel):
+    start: str
 
-    @classmethod
-    def get(cls, lang: str) -> LanguageTexts:
-        return cls.RU if lang == "RU" else cls.EN
+
+# Keyboard texts
+class StartKeyboard(FrozenModel):
+    btn1: str
+    btn2: str
+
+
+class Keyboards:
+    start: StartKeyboard
+
+
+class LanguageTexts(FrozenModel):
+    texts: Texts
+    keyboards: Keyboards
+
+
+# All texts
+class AllTexts(FrozenModel):
+    en: LanguageTexts
+    ru: LanguageTexts
+
+    def get(self, lang: str) -> LanguageTexts:
+        return getattr(self, lang, self.en)
+
+
+all_texts = AllTexts.model_validate(data)
